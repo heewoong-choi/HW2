@@ -56,19 +56,19 @@ jobs:
         # 여기서 실행되는 명령어들은 전부 엔지니어님의 내 PC(Ubuntu) 터미널에서 입력하는 것과 동일하게 작동합니다.
         run: |
           echo "==== 1. 최신 이미지 Pull ===="
-          sudo docker pull ${{ secrets.DOCKERHUB_USERNAME }}/lookalike-server:latest
+          docker pull ${{ secrets.DOCKERHUB_USERNAME }}/lookalike-server:latest
           
           echo "==== 2. 기존 실행 중인 컨테이너 중지 및 삭제 ===="
           # || true 를 붙이면, 처음 실행이라 컨테이너가 없어서 뜨는 에러를 무시하고 쿨하게 넘어갑니다.
-          sudo docker stop face-api || true
-          sudo docker rm face-api || true
+          docker stop face-api || true
+          docker rm face-api || true
           
           echo "==== 3. 새 용량을 차지하는 덜렁 남은 구버전(dangling) 이미지 청소 ===="
-          sudo docker image prune -f
+          docker image prune -f
           
           echo "==== 4. 최신 이미지로 새 컨테이너 구동 ===="
           # Runner는 홈 디렉토리 위치가 다를 수 있어서 안전하게 절대경로를 적용합니다.
-          sudo docker run -d --name face-api -p 8000:8000 \
+          docker run -d --name face-api -p 8000:8000 \
             -v /home/heewoong/projects/porject2/weights:/app/weights \
             ${{ secrets.DOCKERHUB_USERNAME }}/lookalike-server:latest
             
