@@ -146,7 +146,22 @@ async function shareToInstagram() {
         titleObj.style.webkitTextFillColor = '#00f2fe'; // 스크린샷 뜰 때만 단색 처리
     }
     const container = document.querySelector('.glass-container');
-    container.style.color = '#ffffff'; // 스크린샷 뜰 때만 명시적 흰색 배정
+    const originalBg = container.style.background;
+    container.style.background = '#0b0f19'; // 반투명 유리(glass) 속성 버리고 아예 불투명 배경 적용
+    
+    // 🔥 텍스트 강제 색상 주입: 캐시 안 먹어도 자바스크립트로 강제 치환
+    const textEls = container.querySelectorAll('.result-area h2, .result-area p, .progress-text, footer');
+    textEls.forEach(el => {
+        el.dataset.oldColor = el.style.color || '';
+        el.style.color = '#ffffff';
+        el.style.textShadow = 'none'; // 그림자 렌더링 버그 제거
+    });
+
+    const highlight = container.querySelector('.highlight');
+    if (highlight) {
+        highlight.dataset.oldColor = highlight.style.color || '';
+        highlight.style.color = '#00f2fe';
+    }
     
     try {
         const canvas = await html2canvas(container, {
@@ -160,7 +175,15 @@ async function shareToInstagram() {
             titleObj.style.background = '';
             titleObj.style.webkitTextFillColor = '';
         }
-        container.style.color = '';
+        container.style.background = originalBg;
+        
+        textEls.forEach(el => {
+            el.style.color = el.dataset.oldColor;
+        });
+        if (highlight) {
+            highlight.style.color = highlight.dataset.oldColor;
+        }
+
         buttonGroup.classList.remove('hidden');
         
         canvas.toBlob(async (blob) => {
