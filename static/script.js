@@ -163,6 +163,13 @@ async function shareToInstagram() {
         highlight.style.color = '#00f2fe';
     }
     
+    // 🔥 CSS Animation 투명도 캡처 버그 원천 차단
+    const resultArea = document.getElementById('result-area');
+    const originalAnimation = resultArea.style.animation;
+    resultArea.style.animation = 'none';
+    resultArea.style.opacity = '1';
+    resultArea.style.transform = 'none';
+    
     try {
         const canvas = await html2canvas(container, {
             useCORS: true, // 외부 이미지(위키백과) 로딩 허용
@@ -183,6 +190,8 @@ async function shareToInstagram() {
         if (highlight) {
             highlight.style.color = highlight.dataset.oldColor;
         }
+        
+        resultArea.style.animation = originalAnimation;
 
         buttonGroup.classList.remove('hidden');
         
