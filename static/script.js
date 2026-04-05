@@ -139,13 +139,28 @@ async function shareToInstagram() {
     const buttonGroup = document.querySelector('.button-group');
     buttonGroup.classList.add('hidden');
     
+    // [중요] html2canvas가 CSS 최신 그라데이션과 CSS 변수를 잘 못 읽는 고질적 버그 대응
+    const titleObj = document.querySelector('.gradient-text');
+    if (titleObj) {
+        titleObj.style.background = 'transparent';
+        titleObj.style.webkitTextFillColor = '#00f2fe'; // 스크린샷 뜰 때만 단색 처리
+    }
+    const container = document.querySelector('.glass-container');
+    container.style.color = '#ffffff'; // 스크린샷 뜰 때만 명시적 흰색 배정
+    
     try {
-        const canvas = await html2canvas(document.querySelector('.glass-container'), {
+        const canvas = await html2canvas(container, {
             useCORS: true, // 외부 이미지(위키백과) 로딩 허용
             backgroundColor: '#0b0f19',
             scale: 2 // 고화질
         });
         
+        // 원상 복구
+        if (titleObj) {
+            titleObj.style.background = '';
+            titleObj.style.webkitTextFillColor = '';
+        }
+        container.style.color = '';
         buttonGroup.classList.remove('hidden');
         
         canvas.toBlob(async (blob) => {
