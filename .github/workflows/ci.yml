@@ -11,37 +11,65 @@ on:
 
 jobs:
   build-and-push:
-    # 우분투 최신 환경에서 실행
     runs-on: ubuntu-latest
 
     steps:
-      # 1. 깃허브 저장소(현재 코드) 체크아웃
       - name: ✅ Check out the repository
         uses: actions/checkout@v4
 
-      # 2. Docker 빌드 캐시 등을 위한 Buildx 세팅
       - name: ⚙️ Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
-      # 3. Github Secrets를 이용한 Docker Hub 로그인
       - name: 🔐 Log in to Docker Hub
         uses: docker/login-action@v3
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-      # 4. Docker 이미지 빌드 및 Push 처리 (캐시 활성화로 속도 최적화)
       - name: 🚀 Build and push Docker image
         uses: docker/build-push-action@v5
         with:
           context: .
           file: ./Dockerfile
-          push: ${{ github.event_name != 'pull_request' }} # PR일 때는 빌드만 하고 푸시는 생략
-          # DOCKERHUB_USERNAME을 태그네임 앞부분에 박아 넣어 저장소 맞춰주기
-          # latest 태그와 해당 시점의 고유 커밋 해시(sha) 태그 두 개를 동시에 배포
+          push: ${{ github.event_name != 'pull_request' }}
           tags: |
             ${{ secrets.DOCKERHUB_USERNAME }}/lookalike-server:latest
             ${{ secrets.DOCKERHUB_USERNAME }}/lookalike-server:${{ github.sha }}
-          # 이전 빌드 캐시를 불러와서 똑같은 패키지 다운로드를 건너뛰도록 최적화
           cache-from: type=registry,ref=${{ secrets.DOCKERHUB_USERNAME }}/lookalike-server:buildcache
           cache-to: type=registry,ref=${{ secrets.DOCKERHUB_USERNAME }}/lookalike-server:buildcache,mode=max
+
+  # -------------------------------------------------------------
+  # CD (Continuous Deployment) 배포 파이프라인
+  # -------------------------------------------------------------
+  deploy-to-local:
+    # 1. 빌드와 푸시가 모두 끝난 뒤에만 실행하도록 보장
+    needs: build-and-push
+    
+    # 2. GitHub 서버(ubuntu-latest)가 아닌 내 PC에 설치해둔 Self-hosted 러너를 호출!
+    runs-on: self-hosted
+    
+    # 3. PR이 아니라 실제 코드가 머지(Push) 되었을 때만 서버 띄우기
+    if: github.event_name != 'pull_request'
+
+    steps:
+      - name: 🐳 Deploy Container to Self-hosted Machine
+        # 여기서 실행되는 명령어들은 전부 엔지니어님의 내 PC(Ubuntu) 터미널에서 입력하는 것과 동일하게 작동합니다.
+        run: |
+          echo "==== 1. 최신 이미지 Pull ===="
+          sudo docker pull ${{ secrets.DOCKERHUB_USERNAME }}/lookalike-server:latest
+          
+          echo "==== 2. 기존 실행 중인 컨테이너 중지 및 삭제 ===="
+          # || true 를 붙이면, 처음 실행이라 컨테이너가 없어서 뜨는 에러를 무시하고 쿨하게 넘어갑니다.
+          sudo docker stop face-api || true
+          sudo docker rm face-api || true
+          
+          echo "==== 3. 새 용량을 차지하는 덜렁 남은 구버전(dangling) 이미지 청소 ===="
+          sudo docker image prune -f
+          
+          echo "==== 4. 최신 이미지로 새 컨테이너 구동 ===="
+          # Runner는 홈 디렉토리 위치가 다를 수 있어서 안전하게 절대경로를 적용합니다.
+          sudo docker run -d --name face-api -p 8000:8000 \
+            -v /home/heewoong/projects/porject2/weights:/app/weights \
+            ${{ secrets.DOCKERHUB_USERNAME }}/lookalike-server:latest
+            
+          echo "🚀 무중단 재배포(CD) 파이프라인이 내 PC에서 성공적으로 완료되었습니다!"
