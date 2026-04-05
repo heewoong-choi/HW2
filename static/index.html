@@ -7,6 +7,7 @@
     <meta name="description" content="100% In-Memory AI 얼굴 인식 닮은꼴 찾기 테스트">
     <link rel="stylesheet" href="/static/style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 </head>
 <body>
     <div class="background-blobs">
@@ -57,7 +58,10 @@
                     </div>
                     <div class="progress-text">AI 유사도: <span id="match-score"></span>% 일치</div>
                 </div>
-                <button class="btn" id="reset-btn"><i class="fa-solid fa-rotate-right"></i> 다른 사진 테스트하기</button>
+                <div class="button-group">
+                    <button class="btn" id="reset-btn"><i class="fa-solid fa-rotate-right"></i> 다시 하기</button>
+                    <button class="btn ig-btn" id="ig-share-btn"><i class="fa-brands fa-instagram"></i> 인스타 스토리</button>
+                </div>
             </div>
             
             <div id="error-message" class="error-msg hidden"></div>

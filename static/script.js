@@ -11,6 +11,7 @@ const matchScore = document.getElementById('match-score');
 const similarityBar = document.getElementById('similarity-bar');
 const errorMsg = document.getElementById('error-message');
 const resetBtn = document.getElementById('reset-btn');
+const igShareBtn = document.getElementById('ig-share-btn');
 
 // Drag and Drop Events
 ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
@@ -34,6 +35,7 @@ dropZone.addEventListener('drop', handleDrop, false);
 dropZone.addEventListener('click', () => fileInput.click());
 fileInput.addEventListener('change', handleChange);
 resetBtn.addEventListener('click', resetApp);
+igShareBtn.addEventListener('click', shareToInstagram);
 
 function handleDrop(e) {
     const dt = e.dataTransfer;
@@ -130,4 +132,47 @@ function resetApp() {
 function showError(msg) {
     errorMsg.innerText = `⚠️ ${msg}`;
     errorMsg.classList.remove('hidden');
+}
+
+async function shareToInstagram() {
+    // 캡처 화면에서 버튼 숨기기
+    const buttonGroup = document.querySelector('.button-group');
+    buttonGroup.classList.add('hidden');
+    
+    try {
+        const canvas = await html2canvas(document.querySelector('.glass-container'), {
+            useCORS: true, // 외부 이미지(위키백과) 로딩 허용
+            backgroundColor: '#0b0f19',
+            scale: 2 // 고화질
+        });
+        
+        buttonGroup.classList.remove('hidden');
+        
+        canvas.toBlob(async (blob) => {
+            const file = new File([blob], 'my_lookalike.png', { type: 'image/png' });
+            
+            // 모바일 Web Share API (인스타그램 인텐트로 바로 연결 가능)
+            if (navigator.share && navigator.canShare({ files: [file] })) {
+                try {
+                    await navigator.share({
+                        files: [file],
+                        title: 'AI 닮은꼴 테스트',
+                        text: `내 닮은꼴은 ${matchName.innerText}! (${matchScore.innerText}% 일치) 흥미진진한 AI 테스트를 해보세요 😆`
+                    });
+                } catch (e) {
+                    console.log('Share canceled or failed', e);
+                }
+            } else {
+                // PC 등 Web Share 미지원 환경에서는 사진 자동 다운로드
+                const link = document.createElement('a');
+                link.download = `lookalike_${matchName.innerText}.png`;
+                link.href = URL.createObjectURL(blob);
+                link.click();
+                alert('📸 결과 이미지가 다운로드 되었습니다!\n인스타그램 스토리에 직접 올려서 친구들에게 자랑해보세요!');
+            }
+        });
+    } catch(err) {
+        buttonGroup.classList.remove('hidden');
+        showError('이미지 캡처 중 오류가 발생했습니다.');
+    }
 }
