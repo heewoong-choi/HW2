@@ -95,6 +95,9 @@ header h1 {
     font-size: 2.5rem;
     font-weight: 800;
     margin-bottom: 0.5rem;
+    position: relative;
+    z-index: 2;
+    color: #ffffff;
 }
 
 .gradient-text {
@@ -105,8 +108,10 @@ header h1 {
 }
 
 header p {
-    color: var(--text-muted);
+    color: #94a3b8; /* var(--text-muted) 헥스 강제 사용 */
     font-weight: 300;
+    position: relative;
+    z-index: 2;
 }
 
 /* Upload Area */
@@ -216,13 +221,23 @@ header p {
 .result-area {
     margin-top: 1.5rem;
     animation: fadeIn 0.5s ease;
+    position: relative;
+    z-index: 2;
+}
+
+.result-area h2, .result-area p, .progress-text {
+    color: #ffffff;
+    position: relative;
+    z-index: 2;
 }
 
 .highlight {
-    color: var(--primary);
+    color: #00f2fe; /* var(--primary) 헥스 강제 사용 (캡처 버그 방지) */
     font-size: 1.8rem;
     display: inline-block;
     padding: 0 0.5rem;
+    position: relative;
+    z-index: 2;
 }
 
 .progress-bar-container {
@@ -299,7 +314,9 @@ header p {
 footer {
     margin-top: 1rem;
     font-size: 0.8rem;
-    color: var(--text-muted);
+    color: #94a3b8;
+    position: relative;
+    z-index: 2;
 }
 
 /* Utilities */
