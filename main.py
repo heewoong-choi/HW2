@@ -4,9 +4,17 @@ import httpx
 import asyncio
 import numpy as np
 from fastapi import FastAPI, File, UploadFile, HTTPException
+from fastapi.responses import JSONResponse, FileResponse
+from fastapi.staticfiles import StaticFiles
 from deepface import DeepFace
 
 app = FastAPI(title="Lightweight Face-Similarity API")
+
+app.mount("/static", StaticFiles(directory="static"), name="static")
+
+@app.get("/")
+def serve_home():
+    return FileResponse("static/index.html")
 
 # 유명인 이름 리스트 (여기에 이름을 추가하면 서버 시작 시 자동으로 위키백과 사진을 긁어옵니다!)
 CELEB_NAMES = [
@@ -42,6 +50,7 @@ MODEL_NAME = "SFace"
 
 # 글로벌 메모리 저장소
 celeb_names = []
+celeb_urls = {}
 celeb_matrix = None  # (N, D) 형태의 numpy array로 벡터화 연산을 위해 사용
 
 async def fetch_wiki_image_url(client: httpx.AsyncClient, name: str) -> str:
@@ -104,6 +113,7 @@ async def startup_event():
                 if emb is not None:
                     clean_name = name.split(" (")[0]  # "공유 (배우)" -> "공유" 로 깔끔하게 정리
                     celeb_names.append(clean_name)
+                    celeb_urls[clean_name] = img_url  # 프론트 화면 표출용으로 저장
                     embeddings_list.append(emb)
                     print(f"✅ {clean_name} 프로필 이미지 & 벡터 로드 완료! (from 위키백과)")
                 else:
@@ -158,10 +168,12 @@ async def find_lookalike(file: UploadFile = File(...)):
     best_idx = np.argmax(similarities)
     best_score = similarities[best_idx]
     best_match = celeb_names[best_idx]
+    
+    # 0~1 사이의 내적값을 퍼센트로 보기 좋게 변환
+    similarity_percent = round(float(best_score) * 100, 2)
 
-    return {
-        "match": True,
-        "name": best_match,
-        "score": float(best_score),  # 1.0에 가까울 수록 닮음
-        "detail": f"Vectorized Cosine Similarity 측정 완료 (Score: {best_score:.4f})"
-    }
+    return JSONResponse({
+        "lookalike": best_match,
+        "image_url": celeb_urls.get(best_match, ""),
+        "similarity_percent": similarity_percent
+    })

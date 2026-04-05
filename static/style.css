@@ -1,0 +1,308 @@
+@import url('https://fonts.googleapis.com/css2?family=Pretendard:wght@300;400;600;800&display=swap');
+
+:root {
+    --primary: #00f2fe;
+    --secondary: #4facfe;
+    --dark: #0b0f19;
+    --glass-bg: rgba(20, 25, 40, 0.6);
+    --glass-border: rgba(255, 255, 255, 0.08);
+    --text-main: #ffffff;
+    --text-muted: #94a3b8;
+    --danger: #ff4757;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Pretendard', sans-serif;
+}
+
+body {
+    background-color: var(--dark);
+    color: var(--text-main);
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow-x: hidden;
+    position: relative;
+}
+
+/* Background Animated Blobs */
+.background-blobs {
+    position: fixed;
+    top: 0; left: 0; width: 100%; height: 100%;
+    z-index: -1;
+    overflow: hidden;
+}
+
+.blob {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(90px);
+    opacity: 0.5;
+    animation: float 10s infinite ease-in-out alternate;
+}
+
+.shape1 {
+    width: 400px; height: 400px;
+    background: #4facfe;
+    top: -10%; left: -10%;
+    animation-delay: 0s;
+}
+
+.shape2 {
+    width: 500px; height: 500px;
+    background: #00f2fe;
+    bottom: -20%; right: -10%;
+    animation-delay: -5s;
+    animation-duration: 12s;
+}
+
+.shape3 {
+    width: 300px; height: 300px;
+    background: #6a11cb;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    animation-duration: 8s;
+}
+
+@keyframes float {
+    0% { transform: translateY(0) scale(1); }
+    100% { transform: translateY(30px) scale(1.1); }
+}
+
+/* Glassmorphism Container */
+.glass-container {
+    background: var(--glass-bg);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid var(--glass-border);
+    border-radius: 24px;
+    padding: 3rem;
+    width: 90%;
+    max-width: 800px;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+    text-align: center;
+    z-index: 10;
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+}
+
+header h1 {
+    font-size: 2.5rem;
+    font-weight: 800;
+    margin-bottom: 0.5rem;
+}
+
+.gradient-text {
+    background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+header p {
+    color: var(--text-muted);
+    font-weight: 300;
+}
+
+/* Upload Area */
+.upload-area {
+    border: 2px dashed rgba(255, 255, 255, 0.2);
+    border-radius: 16px;
+    padding: 3rem 2rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    background: rgba(255, 255, 255, 0.02);
+}
+
+.upload-area:hover, .upload-area.dragover {
+    border-color: var(--primary);
+    background: rgba(0, 242, 254, 0.05);
+    transform: translateY(-5px);
+}
+
+.icon-container {
+    font-size: 4rem;
+    color: var(--primary);
+    margin-bottom: 1rem;
+    animation: bounce 2s infinite;
+}
+
+@keyframes bounce {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-10px); }
+}
+
+.upload-area h3 {
+    font-size: 1.2rem;
+    margin-bottom: 0.5rem;
+}
+
+.upload-area p {
+    color: var(--text-muted);
+    font-size: 0.9rem;
+}
+
+/* Preview Area */
+.preview-area {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 2rem;
+    margin-top: 1rem;
+}
+
+.image-wrapper {
+    position: relative;
+    width: 200px;
+    height: 250px;
+    border-radius: 16px;
+    overflow: hidden;
+    background: rgba(0,0,0,0.3);
+    border: 1px solid var(--glass-border);
+}
+
+.glow-effect {
+    box-shadow: 0 0 20px rgba(0, 242, 254, 0.2);
+}
+
+.image-wrapper img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+.label {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    background: rgba(0,0,0,0.7);
+    padding: 0.5rem;
+    font-weight: 600;
+    font-size: 0.9rem;
+}
+
+.skeleton {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    color: var(--primary);
+}
+
+.vs-badge {
+    background: linear-gradient(135deg, var(--primary), var(--secondary));
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-weight: 900;
+    font-size: 1.2rem;
+    box-shadow: 0 0 15px rgba(0, 242, 254, 0.4);
+    z-index: 2;
+}
+
+/* Result Area */
+.result-area {
+    margin-top: 1.5rem;
+    animation: fadeIn 0.5s ease;
+}
+
+.highlight {
+    color: var(--primary);
+    font-size: 1.8rem;
+    display: inline-block;
+    padding: 0 0.5rem;
+}
+
+.progress-bar-container {
+    margin: 1.5rem 0;
+}
+
+.progress-bar {
+    width: 100%;
+    height: 12px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 6px;
+    overflow: hidden;
+    margin-bottom: 0.5rem;
+}
+
+.progress-fill {
+    height: 100%;
+    width: 0%;
+    background: linear-gradient(90deg, #6a11cb 0%, var(--primary) 100%);
+    border-radius: 6px;
+    transition: width 1.5s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.progress-text {
+    font-size: 1.1rem;
+    font-weight: 600;
+}
+
+.btn {
+    background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+    border: none;
+    padding: 1rem 2rem;
+    border-radius: 30px;
+    color: #fff;
+    font-weight: 600;
+    font-size: 1.1rem;
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s;
+    margin-top: 1rem;
+    box-shadow: 0 10px 20px rgba(0, 242, 254, 0.2);
+}
+
+.btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 15px 25px rgba(0, 242, 254, 0.4);
+}
+
+.error-msg {
+    color: var(--danger);
+    background: rgba(255, 71, 87, 0.1);
+    padding: 1rem;
+    border-radius: 8px;
+    margin-top: 1rem;
+    border: 1px solid rgba(255, 71, 87, 0.2);
+}
+
+footer {
+    margin-top: 1rem;
+    font-size: 0.8rem;
+    color: var(--text-muted);
+}
+
+/* Utilities */
+.hidden {
+    display: none !important;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+@media (max-width: 600px) {
+    .preview-area {
+        flex-direction: column;
+    }
+    .image-wrapper {
+        width: 100%;
+        max-width: 250px;
+    }
+    .glass-container {
+        padding: 2rem 1.5rem;
+    }
+}

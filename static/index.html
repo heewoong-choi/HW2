@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI 닮은꼴 찾기</title>
+    <meta name="description" content="100% In-Memory AI 얼굴 인식 닮은꼴 찾기 테스트">
+    <link rel="stylesheet" href="/static/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="background-blobs">
+        <div class="blob shape1"></div>
+        <div class="blob shape2"></div>
+        <div class="blob shape3"></div>
+    </div>
+    
+    <div class="glass-container">
+        <header>
+            <h1 class="gradient-text"><i class="fa-solid fa-face-smile-wink"></i> 나와 닮은 셀럽은?</h1>
+            <p>100명의 최신 유명인 데이터베이스 기반 인공지능 매칭</p>
+        </header>
+
+        <main>
+            <div class="upload-area" id="drop-zone" tabindex="0">
+                <input type="file" id="file-input" hidden accept="image/jpeg, image/png, image/webp">
+                <div class="icon-container">
+                    <i class="fa-solid fa-cloud-arrow-up"></i>
+                </div>
+                <h3>사진 업로드 (클릭 또는 드래그)</h3>
+                <p>디스크에 저장되지 않는 안전한 100% In-Memory 휘발성 처리</p>
+            </div>
+
+            <div class="preview-area hidden" id="preview-area">
+                <div class="image-wrapper glow-effect">
+                    <img id="user-image" src="" alt="내 사진">
+                    <div class="label">내 사진</div>
+                </div>
+                
+                <div class="vs-badge">VS</div>
+                
+                <div class="image-wrapper glow-effect" id="celeb-wrapper">
+                    <div class="skeleton" id="celeb-skeleton">
+                        <i class="fa-solid fa-circle-notch fa-spin fa-2x"></i>
+                        <span style="display:block; margin-top:10px;">AI 분석중...</span>
+                    </div>
+                    <img id="celeb-image" class="hidden" src="" alt="셀럽 사진">
+                    <div class="label" id="celeb-label">???</div>
+                </div>
+            </div>
+
+            <div class="result-area hidden" id="result-area">
+                <h2>가장 닮은 유명인은 <span id="match-name" class="highlight"></span> 입니다!</h2>
+                <div class="progress-bar-container">
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="similarity-bar"></div>
+                    </div>
+                    <div class="progress-text">AI 유사도: <span id="match-score"></span>% 일치</div>
+                </div>
+                <button class="btn" id="reset-btn"><i class="fa-solid fa-rotate-right"></i> 다른 사진 테스트하기</button>
+            </div>
+            
+            <div id="error-message" class="error-msg hidden"></div>
+        </main>
+        
+        <footer>
+            <p>Made by Heewoong | Powered by FastAPI & DeepFace</p>
+        </footer>
+    </div>
+
+    <script src="/static/script.js"></script>
+</body>
+</html>
