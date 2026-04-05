@@ -29,6 +29,7 @@ RUN pip install --upgrade pip && \
 
 # 5. 앱 파일 복사 및 가중치용 캐시 폴더 생성 후, 소유권 이전
 COPY main.py .
+COPY static/ static/
 RUN mkdir -p /app/weights && chown -R appuser:appuser /app
 
 # 6. 사용자 전환 (루트 권한 포기 -> 해킹 컨테이너 탈취 공격 방지)
