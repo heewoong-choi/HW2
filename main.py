@@ -108,6 +108,10 @@ async def startup_event():
                     print(f"✅ {clean_name} 프로필 이미지 & 벡터 로드 완료! (from 위키백과)")
                 else:
                     print(f"❌ {name}의 얼굴을 인식할 수 없습니다. (전신 사진이거나 얼굴이 작음)")
+                
+                # [중요] 위키미디어(Wikipedia) 이미지 서버에서 짧은 시간에 너무 많이 다운받으면
+                # 해킹 공격으로 간주하고 429(Too Many Requests) 차단을 먹이기 때문에 0.5초간 휴식합니다.
+                await asyncio.sleep(0.5)
             except Exception as e:
                 print(f"❌ {name} 처리 중 에러: {e}")
 
