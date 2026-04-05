@@ -68,7 +68,7 @@ jobs:
           
           echo "==== 4. 최신 이미지로 새 컨테이너 구동 ===="
           # Runner는 홈 디렉토리 위치가 다를 수 있어서 안전하게 절대경로를 적용합니다.
-          docker run -d --name face-api -p 8000:8000 \
+          docker run -d --name face-api -p 8000:7860 \
             -v /home/heewoong/projects/porject2/weights:/app/weights \
             ${{ secrets.DOCKERHUB_USERNAME }}/lookalike-server:latest
             

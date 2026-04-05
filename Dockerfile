@@ -35,7 +35,7 @@ RUN mkdir -p /app/weights && chown -R appuser:appuser /app
 # 6. 사용자 전환 (루트 권한 포기 -> 해킹 컨테이너 탈취 공격 방지)
 USER appuser
 
-EXPOSE 8000
+EXPOSE 7860
 
-# 7. 서버 실행
-CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]
+# 7. 서버 실행 (Hugging Face Spaces 기본 포트 7860 호환)
+CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "7860"]
