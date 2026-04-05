@@ -37,11 +37,11 @@ jobs:
           context: .
           file: ./Dockerfile
           push: ${{ github.event_name != 'pull_request' }} # PR일 때는 빌드만 하고 푸시는 생략
-          # DOCKER_USERNAME을 태그네임 앞부분에 박아 넣어 저장소 맞춰주기
+          # DOCKERHUB_USERNAME을 태그네임 앞부분에 박아 넣어 저장소 맞춰주기
           # latest 태그와 해당 시점의 고유 커밋 해시(sha) 태그 두 개를 동시에 배포
           tags: |
-            ${{ secrets.DOCKER_USERNAME }}/lookalike-server:latest
-            ${{ secrets.DOCKER_USERNAME }}/lookalike-server:${{ github.sha }}
+            ${{ secrets.DOCKERHUB_USERNAME }}/lookalike-server:latest
+            ${{ secrets.DOCKERHUB_USERNAME }}/lookalike-server:${{ github.sha }}
           # 이전 빌드 캐시를 불러와서 똑같은 패키지 다운로드를 건너뛰도록 최적화
-          cache-from: type=registry,ref=${{ secrets.DOCKER_USERNAME }}/lookalike-server:buildcache
-          cache-to: type=registry,ref=${{ secrets.DOCKER_USERNAME }}/lookalike-server:buildcache,mode=max
+          cache-from: type=registry,ref=${{ secrets.DOCKERHUB_USERNAME }}/lookalike-server:buildcache
+          cache-to: type=registry,ref=${{ secrets.DOCKERHUB_USERNAME }}/lookalike-server:buildcache,mode=max
